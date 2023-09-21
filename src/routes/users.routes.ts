@@ -8,7 +8,7 @@ import { loginValidator, registerValidator } from '~/middlewares/validation.midd
 userRouter.post('/login', loginValidator, loginController)
 
 
-// Method Register
+// Method Register + Validation
 userRouter.post('/register',registerValidator
 , registerController)
 

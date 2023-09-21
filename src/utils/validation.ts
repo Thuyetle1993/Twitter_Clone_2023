@@ -9,7 +9,7 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
 
     await validation.run(req); // Check loi
 
-    const errors = validationResult(req); // Lay loi ra tu bien req
+    const errors = validationResult(req); // Lay loi ra tu bien req và trả về cho errors
     // Neu ko co loi
     if (errors.isEmpty()) {
       return next();

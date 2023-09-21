@@ -66,9 +66,17 @@ export const registerValidator = validate(checkSchema({
         minNumbers: 1,
         minSymbols: 1,      
       },
-      errorMessage: 'The password you entered is not strong enough. Please choose a stronger password that includes uppercase letters, lowercase letters, numbers, and special characters'    
-    }
+    },
+    custom: {
+      options: (value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error('Password confirmation does not match password');
+        }
+        return true;
+    }    
+    },
   },
+  
   date_of_birth: {
     isISO8601: {
       options: {
