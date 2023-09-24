@@ -29,7 +29,14 @@ class UserService {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN
       }
     })
-  } 
+  }
+  // Tạo private method signAccessAndRefreshToken
+  private signAccessAndRefreshToken(user_id: string) {
+    return  Promise.all([
+      this.signAccessToken(user_id),
+      this.signRefreshToken(user_id)
+    ])
+  }
 
   async register(payload: RegisterReqBody) { 
         const { email, password } = payload
@@ -41,18 +48,25 @@ class UserService {
             })
           )
           const user_id = result.insertedId.toString()
-          const [access_token, refress_token] = await Promise.all([
-            this.signAccessToken(user_id),
-            this.signRefreshToken(user_id)
-          ])
+          const [access_token, refress_token] = await this.signAccessAndRefreshToken(user_id)
+                       
           return {
             access_token,
             refress_token
           }
+          
   }
   async checkEmailExist(email: string) {
       const user = await databaseService.users.findOne({ email })
       return Boolean(user)
+  }
+  async login(user_id: string) {
+    const [access_token, refress_token] = await this.signAccessAndRefreshToken(user_id)
+
+    return {
+      access_token,
+      refress_token
+    }
   }
 }
 
