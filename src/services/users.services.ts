@@ -4,6 +4,10 @@ import User from '~/models/schemas/User.schema'
 import { hashPassword } from "~/utils/crypto";
 import { signToken } from "~/utils/jwt";
 import { TokenType } from "~/constants/enum";
+import { ObjectId } from "mongodb";
+import refreshTokens from "~/models/schemas/RefreshToken.schema";
+import { config } from "dotenv";
+config();
 
 class UserService {
   // tao Access Token
@@ -49,7 +53,10 @@ class UserService {
           )
           const user_id = result.insertedId.toString()
           const [access_token, refress_token] = await this.signAccessAndRefreshToken(user_id)
-                       
+           
+          // Thêm RF vào DB
+          await databaseService.refreshTokens.insertOne(new refreshTokens({ user_id: new ObjectId(user_id), token: refress_token }))
+
           return {
             access_token,
             refress_token
@@ -62,6 +69,9 @@ class UserService {
   }
   async login(user_id: string) {
     const [access_token, refress_token] = await this.signAccessAndRefreshToken(user_id)
+
+    // Thêm RF vào DB
+    await databaseService.refreshTokens.insertOne(new refreshTokens({ user_id: new ObjectId(user_id), token: refress_token }))
 
     return {
       access_token,
