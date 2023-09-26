@@ -23,9 +23,23 @@ export const signToken = ({
     })
   })
 }
-signToken({
-  payload: {},
-  options: {
-    algorithm: 'HS256'
-  }
-})
+
+// Tạo hàm VerifyToken
+
+export const verifyToken = ({token, secretOrPublicKey = process.env.JWT_SECRET as string}: {token: string,secretOrPublicKey?: string }) => {
+  return new Promise<Jwt.JwtPayload>((resolve, reject) => {
+    Jwt.verify(token, secretOrPublicKey, (error, decoded) => {
+      if (error) {
+        throw reject(error)
+      }
+      resolve(decoded as Jwt.JwtPayload)
+    })
+  })
+}
+
+// signToken({
+//   payload: {},
+//   options: {
+//     algorithm: 'HS256'
+//   }
+// })
