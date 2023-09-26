@@ -1,8 +1,8 @@
 
 import {Router} from 'express'
 const userRouter = Router();
-import { loginController, registerController } from '~/controllers/users.controllers';
-import { accessTokenValidator, loginValidator, registerValidator } from '~/middlewares/users.middlewares';
+import { loginController, logoutController, registerController } from '~/controllers/users.controllers';
+import { RefreshTokenValidator, accessTokenValidator, loginValidator, registerValidator } from '~/middlewares/users.middlewares';
 import { wrapRequestHandler } from '~/utils/handlers';
 
 /**
@@ -26,9 +26,7 @@ userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 
 // Method Logout
-userRouter.post('/logout',accessTokenValidator, wrapRequestHandler((req, res) => {
-    res.json( { message: 'Logout successfully !'})
-}))
+userRouter.post('/logout',accessTokenValidator, RefreshTokenValidator, wrapRequestHandler(logoutController))
 
 // Method Register + Validation
 userRouter.post('/register',registerValidator
