@@ -1,5 +1,5 @@
 import { config } from 'dotenv'
-import { checkSchema } from 'express-validator'
+import { ExpressValidator, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import HTTP_STATUS from '~/constants/httpStatus'
 import USERS_MESSAGES from '~/constants/messsage'
@@ -284,3 +284,5 @@ export const emailVerifyTokenValidator = validate(
     ['body']
   )
 )
+
+

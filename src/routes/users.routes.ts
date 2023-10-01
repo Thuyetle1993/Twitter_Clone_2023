@@ -1,7 +1,7 @@
 
 import {Router} from 'express'
 const userRouter = Router();
-import { emailVerifyValidator, loginController, logoutController, registerController } from '~/controllers/users.controllers';
+import { emailVerifyController, loginController, logoutController, registerController, resendVerifyEmailController } from '~/controllers/users.controllers';
 import { RefreshTokenValidator, accessTokenValidator, emailVerifyTokenValidator, loginValidator, registerValidator } from '~/middlewares/users.middlewares';
 import { wrapRequestHandler } from '~/utils/handlers';
 
@@ -41,7 +41,16 @@ userRouter.post('/register',registerValidator
  * Body:  {email_verify_token: string}  
  */
 
-userRouter.post('/verify-email',emailVerifyTokenValidator, wrapRequestHandler(emailVerifyValidator))
+userRouter.post('/verify-email',emailVerifyTokenValidator, wrapRequestHandler(emailVerifyController))
 
+/**
+ * Des : Resend Verify email when click on the link in email
+ * Path : /resend-verify-email
+ * Method: POST
+ * Header : {Authorization: Bearer <access_token>}
+ * Body:  {}  
+ */
+
+userRouter.post('/resend-verify-email',accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
 
 export default userRouter   

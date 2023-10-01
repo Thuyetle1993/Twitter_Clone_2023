@@ -130,6 +130,30 @@ class UserService {
     }
   }
 
+  // Resend Verify Email
+
+  async resendVerifyEmail(user_id: string) {
+    const email_verify_token = await this.signEmailVerifyToken(user_id)
+    // Chua co gui email nen ta se in ra de test nhu sau
+    console.log('Resend verify email:', email_verify_token)
+
+    // Cap nhat lai gia tri email_verify_token trong document user
+    await databaseService.users.updateOne(
+      {_id: new ObjectId(user_id)},
+      {
+      $set: {
+        email_verify_token, 
+      },
+      $currentDate: {
+        updated_at: true      
+      } 
+    })
+    return {
+      message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
+    }
+  }
+
+
   // Them method moi duoi dong nay
 }
 
