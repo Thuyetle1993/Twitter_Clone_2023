@@ -7,6 +7,7 @@ import {
   LoginReqBody,
   LogoutReqBody,
   RegisterReqBody,
+  ResetPasswordReqBody,
   TokenPayload,
   VerifyEmailReqBody,
   VerifyForgotPasswordReqBody
@@ -17,6 +18,7 @@ import USERS_MESSAGES from '~/constants/messsage'
 import databaseService from '~/services/database.services'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enum'
+import { result } from 'lodash'
 
 // Login Controller
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
@@ -122,4 +124,14 @@ export const verifyForgotPasswordTokenController = async (
     return res.json({
       message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_SUCCESS
     })
+  }
+
+// Reset Password Controller
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>, res: Response, 
+  next: NextFunction) => {
+    const {user_id} = req.decoded_forgot_password_token as TokenPayload
+    const {password} = req.body
+    const result = await userService.resetPassword(user_id, password)
+    return res.json(result)
   }
