@@ -11,7 +11,7 @@ export const USERS_MESSAGES = {
     NAME_NO_SPACES: 'Name should not contain leading or trailing spaces',
     NAME_LENGTH: 'Name length should be between 1 and 100 characters',
     EMAIL_NOT_EMPTY: 'Email should not be empty',
-    EMAIL_IS_EMAIL: 'Email should be a valid email address',
+    EMAIL_IS_INVALID: 'Email should be a valid email address',
     EMAIL_NO_SPACES: 'Email should not contain leading or trailing spaces',
     EMAIL_EXISTS: 'Email already exists',
     PASSWORD_NOT_EMPTY: 'Password should not be empty',
@@ -35,7 +35,8 @@ export const USERS_MESSAGES = {
     USER_NOT_FOUND: 'User not found',
     EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
     EMAIL_VERIFY_SUCCESS: 'Email verify success',
-    RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success'
+    RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success',
+    CHECK_EMAIL_TO_RESET_PASSWORD: 'Check email to reset password'
 
     
   } as const;

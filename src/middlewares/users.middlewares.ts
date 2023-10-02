@@ -12,13 +12,14 @@ import { validate } from '~/utils/validation'
 config()
 import { Request } from 'express'
 import { capitalize } from 'lodash'
+import exp from 'node:constants'
 // Login middleware
 export const loginValidator = validate(
   checkSchema(
     {
       email: {
         isEmail: {
-          errorMessage: USERS_MESSAGES.EMAIL_IS_EMAIL
+          errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
         },
         trim: true,
         custom: {
@@ -88,7 +89,7 @@ export const registerValidator = validate(
           errorMessage: USERS_MESSAGES.NAME_NOT_EMPTY
         },
         isEmail: {
-          errorMessage: USERS_MESSAGES.EMAIL_IS_EMAIL
+          errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
         },
         trim: true,
         custom: {
@@ -285,4 +286,29 @@ export const emailVerifyTokenValidator = validate(
   )
 )
 
+// Validate Email reset password
 
+export const forgotPasswordValidator = validate(
+  checkSchema(
+    {
+      email: {
+        isEmail: {
+          errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const user = await databaseService.users.findOne({
+              email: value              
+            })
+            if (user === null) {
+              throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+            }
+            req.user = user
+            return true
+          }
+        }
+      },
+  }, ['body']
+  )
+)
