@@ -16,10 +16,12 @@ export interface LoginReqBody {
 export interface ForgotPasswordReqBody {
     email: string
 }
+export interface VerifyForgotPasswordReqBody {
+    forgot_password_token: string
+}
 
 export interface VerifyEmailReqBody {
     email_verify_token: string
-
 }
 export interface TokenPayload extends JwtPayload {
      user_id: string
