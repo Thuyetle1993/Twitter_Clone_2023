@@ -10,10 +10,12 @@ import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 config()
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { capitalize } from 'lodash'
 import exp from 'node:constants'
 import { ObjectId } from 'mongodb'
+import { TokenPayload } from '~/models/request/user.request'
+import { UserVerifyStatus } from '~/constants/enum'
 // Login middleware
 export const loginValidator = validate(
   checkSchema(
@@ -322,10 +324,7 @@ export const emailVerifyTokenValidator = validate(
                 message: capitalize((error as JsonWebTokenError).message),
                 status: HTTP_STATUS.UNAUTHORIZED
               })
-
             }
-            
-
             return true
           }
         }
@@ -377,3 +376,15 @@ export const resetPasswordValidator  = validate(
     forgot_password_token: forgotPasswordTokenSchema
   }, ['body'])
 )
+
+// VerifiedUser Validator
+export const verifiedUserValidator = (req: Request , res: Response, next: NextFunction) => {
+  const {verify} = req.decoded_authorization as TokenPayload
+  if (verify !== UserVerifyStatus.Verified) {
+    return next(new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_NOT_VERIFIED,
+      status: HTTP_STATUS.FORBIDDEN
+    })) 
+  }
+  next()
+}
