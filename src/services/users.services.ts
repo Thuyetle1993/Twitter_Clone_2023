@@ -1,10 +1,10 @@
-import { RegisterReqBody } from '~/models/request/user.request'
+import { RegisterReqBody, UpdateMeReqBody } from '~/models/request/user.request'
 import databaseService from './database.services'
 import User from '~/models/schemas/User.schema'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType, UserVerifyStatus } from '~/constants/enum'
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
 import refreshTokens from '~/models/schemas/RefreshToken.schema'
 import { config } from 'dotenv'
 import USERS_MESSAGES from '~/constants/messsage'
@@ -225,9 +225,42 @@ class UserService {
     })
     return user
   }
+  // Update Me
+  async updateMe(user_id: string, payload: UpdateMeReqBody) {
+    // Chỗ này ta dùng một biến khác là_payload sẽ nhận về gía trị là payload hoặc là payload với date_of_birth đã convert sang kiểu Date
+    const _payload = payload.date_of_birth ? {...payload, date_of_birth: new Date(payload.date_of_birth)} : payload
+    const user  = await databaseService.users.findOneAndUpdate(
+
+      
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: {
+
+          ...(_payload as UpdateMeReqBody & {date_of_birth?: Date})
+        },
+        $currentDate: {
+          update_at: true
+        }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        },
+        includeResultMetadata: true  
+      }      
+    )
+    return user.value        
+  }
 
   // Them method moi duoi dong nay
 }
 
 const userService = new UserService() 
 export default userService
+
+

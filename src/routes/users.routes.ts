@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { update } from 'lodash'
 const userRouter = Router()
 import {
   verifyEmailController,
@@ -21,6 +20,7 @@ import {
   loginValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
@@ -119,6 +119,6 @@ userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
  * Body : UserSchema
  */
 
-userRouter.patch('/me', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(updateMeController))
+userRouter.patch('/me', accessTokenValidator, verifiedUserValidator,updateMeValidator ,wrapRequestHandler(updateMeController))
 
 export default userRouter
