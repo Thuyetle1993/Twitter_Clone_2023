@@ -16,6 +16,7 @@ import exp from 'node:constants'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/request/user.request'
 import { UserVerifyStatus } from '~/constants/enum'
+import { REGEX_USERNAME } from '~/constants/regex'
 // Login middleware
 export const loginValidator = validate(
   checkSchema(
@@ -493,14 +494,19 @@ export const verifiedUserValidator = (req: Request , res: Response, next: NextFu
           isString: {
             errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_STRING
           },
-          trim: true,
-          isLength: {
-            options: {
-              min: 1,
-              max: 50
-            },
-            errorMessage: USERS_MESSAGES.USERNAME_LENGTH
-          }
+          trim: true,  
+          custom: {
+            options: async (value: string, {req}) => {
+              if ( !REGEX_USERNAME.test(value) === false) {
+                  throw Error(USERS_MESSAGES.USERNAME_INVALID)
+              }
+              const user = await databaseService.users.findOne({username: value})
+              // Nếu username đã tồn tại thì ko được update
+              if(user) {
+                throw Error(USERS_MESSAGES.USERNAME_EXISTED)
+              }
+            }
+          }       
         },
         avatar: imageSchema,
         cover_photo: imageSchema
