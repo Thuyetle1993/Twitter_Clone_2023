@@ -12,11 +12,13 @@ import {
   getMeController,
   updateMeController,
   followController,
-  unFollowController
+  unFollowController,
+  changePasswordController
 } from '~/controllers/users.controllers'
 import {
   RefreshTokenValidator,
   accessTokenValidator,
+  changePasswordValidator,
   emailVerifyTokenValidator,
   followValidator,
   forgotPasswordValidator,
@@ -145,5 +147,15 @@ userRouter.post('/follow', accessTokenValidator, verifiedUserValidator, followVa
  */
 
 userRouter.delete('/follow/:user_id', accessTokenValidator, verifiedUserValidator, unFollowValidator, wrapRequestHandler(unFollowController))
+
+/**
+ * Des : Change password
+ * Path : /change-password
+ * Method: PUT
+ * Header:  {Authorization: Bearer <access_token>}
+ * Body: {old_password: string, password: string, confirm_password: string}
+ */
+
+userRouter.put('/change-password', accessTokenValidator, verifiedUserValidator, changePasswordValidator, wrapRequestHandler(changePasswordController))
 
 export default userRouter
