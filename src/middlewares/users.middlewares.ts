@@ -198,7 +198,31 @@ export const loginValidator = validate(
       errorMessage: USERS_MESSAGES.IMAGE_URL_LENGTH
     }
   }
+  const userIdSchema: ParamSchema = {
+    custom: {
+      options: async (value, {req}) => {
+        // Check userID valid :
 
+        if(!ObjectId.isValid(value)) {
+          throw new ErrorWithStatus({
+            message: USERS_MESSAGES.INVALID_USER_ID,
+            status: HTTP_STATUS.NOT_FOUND
+          })
+        }
+
+        // Check user exist :
+        const followed_user = await databaseService.users.findOne({
+          _id: new ObjectId(value)
+        })
+        if ( followed_user === null) {
+          throw new ErrorWithStatus({
+            message: USERS_MESSAGES.USER_NOT_FOUND,
+            status: HTTP_STATUS.NOT_FOUND
+          })
+        }         
+      }
+    }
+  }
 
 
 // Register middleware
@@ -484,34 +508,17 @@ export const verifiedUserValidator = (req: Request , res: Response, next: NextFu
     )
   )
 
-  // Follow Validator
+// Follow Validator
   export const followValidator = validate(
     checkSchema({
-      followed_user_id: {
-        custom: {
-          options: async (value, {req}) => {
-            // Check userID valid :
-
-            if(!ObjectId.isValid(value)) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.INVALID_FOLLOWED_USER_ID,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            // Check user exist :
-            const followed_user = await databaseService.users.findOne({
-              _id: new ObjectId(value)
-            })
-            if ( followed_user === null) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }         
-          }
-        }
-      }
-    }
+      followed_user_id: userIdSchema
+    }, ['body']
     )
   )
+
+// Unfollow Validator 
+export const unFollowValidator = validate(
+  checkSchema({
+    user_id: userIdSchema
+  }, ['params'])
+)

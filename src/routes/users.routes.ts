@@ -11,7 +11,8 @@ import {
   resetPasswordController,
   getMeController,
   updateMeController,
-  followController
+  followController,
+  unFollowController
 } from '~/controllers/users.controllers'
 import {
   RefreshTokenValidator,
@@ -22,6 +23,7 @@ import {
   loginValidator,
   registerValidator,
   resetPasswordValidator,
+  unFollowValidator,
   updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordTokenValidator
@@ -127,13 +129,21 @@ userRouter.patch('/me', accessTokenValidator, verifiedUserValidator,updateMeVali
 
 /**
  * Des : Get my profile
- * Path : /:username
+ * Path : /follow
  * Method: POST
  * Header:  {Authorization: Bearer <access_token>}
- * Body: { user_id : string}
+ * Body: { followe_user_id : string}
  */
 
 userRouter.post('/follow', accessTokenValidator, verifiedUserValidator, followValidator , wrapRequestHandler(followController))
 
+/**
+ * Des : Get my profile
+ * Path : /follow/user_id
+ * Method: DELETE
+ * Header:  {Authorization: Bearer <access_token>}
+ */
+
+userRouter.delete('/follow/:user_id', accessTokenValidator, verifiedUserValidator, unFollowValidator, wrapRequestHandler(unFollowController))
 
 export default userRouter
