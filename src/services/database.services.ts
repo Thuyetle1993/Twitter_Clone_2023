@@ -3,6 +3,7 @@ import { Collection, Db, MongoClient } from 'mongodb';
 import { config } from 'dotenv';
 import User from '~/models/schemas/User.schema';
 import RefreshToken from '~/models/schemas/RefreshToken.schema';
+import Follower from '~/models/schemas/Follower.schema';
 config();
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@tweeter-thuyet.jwhse00.mongodb.net/?retryWrites=true&w=majority`;
@@ -32,6 +33,13 @@ class DatabaseService {
     get refreshTokens(): Collection<RefreshToken> {
       return this.db.collection(process.env.DB_REFRESH_TOKEN_COLLECTION as string)
     }
+    
+    // Follow Collection 
+    get followers() : Collection<Follower> {
+      return this.db.collection(process.env.DB_FOLLOWERS_COLLECTION as string)
+    }
+
+    // Them method tren dong  nay 
 }
 // Tạo Object từ class DatabaseService
 const databaseService = new DatabaseService();

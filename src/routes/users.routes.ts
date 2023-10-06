@@ -10,12 +10,14 @@ import {
   verifyForgotPasswordTokenController,
   resetPasswordController,
   getMeController,
-  updateMeController
+  updateMeController,
+  followController
 } from '~/controllers/users.controllers'
 import {
   RefreshTokenValidator,
   accessTokenValidator,
   emailVerifyTokenValidator,
+  followValidator,
   forgotPasswordValidator,
   loginValidator,
   registerValidator,
@@ -26,6 +28,8 @@ import {
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import { Request, Response, NextFunction } from 'express'
+import { filterMiddlware } from '~/middlewares/common.middlewares'
+import { UpdateMeReqBody } from '~/models/request/user.request'
 
 /**
  * Des : Login a user
@@ -119,6 +123,17 @@ userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
  * Body : UserSchema
  */
 
-userRouter.patch('/me', accessTokenValidator, verifiedUserValidator,updateMeValidator ,wrapRequestHandler(updateMeController))
+userRouter.patch('/me', accessTokenValidator, verifiedUserValidator,updateMeValidator, filterMiddlware<UpdateMeReqBody>(['name', 'date_of_birth','bio', 'location', 'website','username', 'avatar', 'cover_photo']) , wrapRequestHandler(updateMeController))
+
+/**
+ * Des : Get my profile
+ * Path : /:username
+ * Method: POST
+ * Header:  {Authorization: Bearer <access_token>}
+ * Body: { user_id : string}
+ */
+
+userRouter.post('/follow', accessTokenValidator, verifiedUserValidator, followValidator , wrapRequestHandler(followController))
+
 
 export default userRouter
