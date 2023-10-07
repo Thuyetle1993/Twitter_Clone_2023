@@ -159,3 +159,4 @@ userRouter.delete('/follow/:user_id', accessTokenValidator, verifiedUserValidato
 userRouter.put('/change-password', accessTokenValidator, verifiedUserValidator, changePasswordValidator, wrapRequestHandler(changePasswordController))
 
 export default userRouter
+
