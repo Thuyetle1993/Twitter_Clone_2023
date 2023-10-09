@@ -5,6 +5,7 @@ import { UPLOAD_DIR } from "~/constants/dir";
 import { Express } from "express";
 import fs from 'fs';
 import { getNameFromFullname, handleUploadSingleImage } from "~/utils/file";
+import { isProduction } from "~/constants/config";
 
 class MediasService {
     async handleUploadSingleImage(req: Request) {
@@ -14,7 +15,9 @@ class MediasService {
         const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`)
         await sharp(file.filepath).jpeg().toFile(newPath)
         fs.unlinkSync(file.filepath)
-        return `http://localhost:3001/uploads/${newName}.jpg`
+
+        // ! Tra ve duong dan URL toi image        
+        return isProduction ? `${process.env.HOST}/medias/${newName}.jpg` : `http://localhost:${process.env.PORT}/medias/${newName}.jpg`
     }
 }
 

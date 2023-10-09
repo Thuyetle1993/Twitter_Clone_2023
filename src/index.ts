@@ -5,9 +5,14 @@ import databaseService from './services/database.services';
 import { defaultErrorHandler } from './middlewares/error.middlewares';
 import mediasRouter from './routes/medias.routes';
 import { initFolder } from './utils/file';
+import { config } from 'dotenv';
+config()
+import argv from 'minimist'
+const options = argv(process.argv.slice(2))
 
 const app = express()
-const port = 3001; 
+const port = process.env.PORT; 
+console.log(process.env.PORT);
 
 
 // ? Tạo folder upload
