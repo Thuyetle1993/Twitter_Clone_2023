@@ -8,6 +8,7 @@ import { initFolder } from './utils/file';
 import { config } from 'dotenv';
 config()
 import argv from 'minimist'
+import staticRouter from './routes/static.routes';
 const options = argv(process.argv.slice(2))
 
 const app = express()
@@ -24,6 +25,8 @@ app.use(express.json()) // ! middleware parse file json thanh Obj de Validation 
 
 app.use('/users', userRouter);
 app.use('/medias', mediasRouter);
+app.use('/static', staticRouter);
+
 
 databaseService.connect();
 
