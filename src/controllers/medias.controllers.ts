@@ -5,6 +5,9 @@ import path from 'path'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { error } from 'console'
 import USERS_MESSAGES from '~/constants/messsage'
+import HTTP_STATUS from '~/constants/httpStatus'
+import fs from 'fs'
+import mime from 'mime'
 
 //! Upload Image Controller
 
@@ -36,13 +39,47 @@ export const serverImageController = (req: Request & IncomingMessage, res: Respo
   })
 }
 
-//! Serve Video Controller
+//! Serve Video Stream Controller
 
-export const serverVideoController = (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
-  const { name } = req.params
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, name), (error) => {
-    if (error) {
-      res.status((error as any).status).send('Not found')
+export const serverVideoStreamController = (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
+  const range = req.headers.range
+  if (!range) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).send('Requires Range header')
+    const { name } = req.params
+    const videoPath = path.resolve(UPLOAD_VIDEO_DIR, name)   
+
+    //? 1MB = 10^6 bytes ( tinsh theo hệ 10, đay là thứ chúng ta hay thấy trên UI)
+    //? Còn nếu tính theo hệ nhị phân thì 1MB = 2^20 bytes ( 1024 * 1024)
+
+    const videoSize = fs.statSync(videoPath).size
+
+    //! Dung lượng video cho mỗi phân đoạn stream
+
+    const chunkSize = 10 ** 6 // 1MB
+
+    //! Lấy giá trị byte bắt đầu từ header Range ( vd: bytes=1048576-)
+
+    const start = Number(range?.replace(/\D/g, ''))
+
+    //! Lay gia tri byte ket thuc, vuot qua dung luong video thi lay gia tri cuoi cung
+
+    const end = Math.min(start + chunkSize, videoSize)
+
+    //? Dung luong thuc te cho moi doan video stream
+    //? Thuong day se la chunkSize, ngoai tru doan cuoi cung
+
+    const contentLength = end - start
+    const contentType = mime.getType(videoPath) || 'video/*' //! ko lay dc thi ko bit dinh dang
+
+    const headers = {
+      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': contentLength,
+      'Content-Type': contentType
     }
-  })
+    res.writeHead(HTTP_STATUS.PARTIAL_CONTENT, headers) //! Status dai dien cho content bi chia cat ra lam nhieu doan
+
+    const videoStream = fs.createReadStream(videoPath, { start, end })
+    videoStream.pipe(res)
+  }
 }
