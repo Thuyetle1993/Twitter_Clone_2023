@@ -13,7 +13,8 @@ import {
   updateMeController,
   followController,
   unFollowController,
-  changePasswordController
+  changePasswordController,
+  refreshTokenController
 } from '~/controllers/users.controllers'
 import {
   RefreshTokenValidator,
@@ -55,6 +56,16 @@ userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 //Route Logout
 userRouter.post('/logout', accessTokenValidator, RefreshTokenValidator, wrapRequestHandler(logoutController))
+
+/**
+ * Des : Refresh Token
+ * Path : /refresh-token
+ * Method: POST
+ * Body:  {refresh_token: string}
+ */
+
+userRouter.post('/refresh-token', RefreshTokenValidator, wrapRequestHandler(refreshTokenController))
+
 
 // Method Register + Validation
 userRouter.post('/register', registerValidator, wrapRequestHandler(registerController))

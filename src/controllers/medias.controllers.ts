@@ -63,12 +63,12 @@ export const serverVideoStreamController = (req: Request & IncomingMessage, res:
 
     //! Lay gia tri byte ket thuc, vuot qua dung luong video thi lay gia tri cuoi cung
 
-    const end = Math.min(start + chunkSize, videoSize)
+    const end = Math.min(start + chunkSize, videoSize - 1)
 
     //? Dung luong thuc te cho moi doan video stream
     //? Thuong day se la chunkSize, ngoai tru doan cuoi cung
 
-    const contentLength = end - start
+    const contentLength = end - start + 1
     const contentType = mime.getType(videoPath) || 'video/*' //! ko lay dc thi ko bit dinh dang
 
     const headers = {
