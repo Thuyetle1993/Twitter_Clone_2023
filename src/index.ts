@@ -14,7 +14,14 @@ const options = argv(process.argv.slice(2))
 
 const app = express()
 const port = process.env.PORT; 
-console.log(process.env.PORT);
+
+//! Kiêmr tra đường dẫn :
+if (process.env.PATH) {
+    console.log(process.env.PATH.split(';').includes('C:\\Ffmpeg\\bin'));
+  } else {
+    console.log("PATH environment variable is not defined.");
+  }
+
 
 
 // ? Tạo folder upload
