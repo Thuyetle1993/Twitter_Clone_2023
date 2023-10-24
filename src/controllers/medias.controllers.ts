@@ -36,11 +36,41 @@ export const uploadVideoHLSController = async (req: Request & IncomingMessage, r
   })
 }
 
+//! Check Video Status Controller
+export const videoStatusController = async (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  const result = await mediasService.getVideoStatus(id as string)
+  return res.json({
+    message: USERS_MESSAGES.GET_VIDEO_STATUS_SUCCESS,
+    result: result
+  })
+}
+
 //! Serve Image Controller
 
 export const serverImageController = (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
   const { name } = req.params
   return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, name), (error) => {
+    if (error) {
+      res.status((error as any).status).send('Not found')
+    }
+  })
+}
+
+//! Serve Video HLS Stream Controller
+
+export const serveM3u8Controller = (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (error) => {
+    if (error) {
+      res.status((error as any).status).send('Not found')
+    }
+  })
+}
+export const serveSegmentController = (req: Request & IncomingMessage, res: Response, next: NextFunction) => {
+  const { id, v, segment } = req.params
+  //? segment : 0.ts, 1.ts, 2.ts...
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (error) => {
     if (error) {
       res.status((error as any).status).send('Not found')
     }

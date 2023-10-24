@@ -10,6 +10,7 @@ config()
 import argv from 'minimist'
 import staticRouter from './routes/static.routes';
 import { UPLOAD_VIDEO_DIR } from './constants/dir';
+import cors from 'cors'
 const options = argv(process.argv.slice(2))
 
 const app = express()
@@ -35,6 +36,7 @@ app.use('/users', userRouter);
 app.use('/medias', mediasRouter);
 app.use('/static', staticRouter);
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
+app.use(cors())
 
 
 databaseService.connect();

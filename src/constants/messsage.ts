@@ -66,8 +66,7 @@ export const USERS_MESSAGES = {
   CHANGE_PASSWORD_SUCCESS: 'Change password sucess',
   UPLOAD_SUCCESS: 'Upload Success',
   REFRESH_TOKEN_SUCCESS: 'Refresh token success',
-
-  
+  GET_VIDEO_STATUS_SUCCESS: 'Get video status success'
 } as const
 
 export default USERS_MESSAGES
