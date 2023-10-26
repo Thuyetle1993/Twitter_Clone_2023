@@ -40,8 +40,12 @@ app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 app.use(cors())
 
 
-databaseService.connect().then(() =>
+databaseService.connect().then(() => {
   databaseService.indexUsers()
+  databaseService.indexRefreshToken()
+  databaseService.indexVideoStatus()
+  databaseService.indexFollowers()
+}
 )
 
 
