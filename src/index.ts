@@ -11,6 +11,7 @@ import argv from 'minimist'
 import staticRouter from './routes/static.routes';
 import { UPLOAD_VIDEO_DIR } from './constants/dir';
 import cors from 'cors'
+import { MongoClient } from 'mongodb';
 const options = argv(process.argv.slice(2))
 
 const app = express()
@@ -39,7 +40,10 @@ app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 app.use(cors())
 
 
-databaseService.connect();
+databaseService.connect().then(() =>
+  databaseService.indexUsers()
+)
+
 
 // Middleware xử lý lỗi
 app.use(defaultErrorHandler);
@@ -48,6 +52,25 @@ app.listen(port, () => {
     console.log(`Server Thuyet Le is running or port ${port}`)
 })
 
- 
+//! Tạo DB mới để test 
 
- 
+// const mgclient = new MongoClient(
+//   `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@tweeter-thuyet.jwhse00.mongodb.net/?retryWrites=true&w=majority`
+// ) 
+
+//  const db = mgclient.db('thuyet-KIP')
+//  //? Tao 1000 doc vao collection users
+//  const users = db.collection('users')
+//  const usersData = []
+//  function getRandomNumber() {
+//   return  Math.floor(Math.random() * 100) + 1
+//  }
+
+//  for ( let i = 0; i < 1000; i++) {
+//   usersData.push({
+//     name: 'user' + (i+1),
+//     age: getRandomNumber(),
+//     sex: i % 2 === 0 ? 'male' : 'female'    
+//   })
+//  }
+//  users.insertMany(usersData)
