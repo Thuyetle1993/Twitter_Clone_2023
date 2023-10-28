@@ -1,6 +1,6 @@
 import { type } from "os"
 import HTTP_STATUS from "~/constants/httpStatus"
-import USERS_MESSAGES from "~/constants/messsage"
+import { USERS_MESSAGES } from '~/constants/messsage'
 
 
 type ErrorType = Record<string, {

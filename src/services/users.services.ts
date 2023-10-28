@@ -7,7 +7,7 @@ import { TokenType, UserVerifyStatus } from '~/constants/enum'
 import { ObjectId, WithId } from 'mongodb'
 import refreshTokens from '~/models/schemas/RefreshToken.schema'
 import { config } from 'dotenv'
-import USERS_MESSAGES from '~/constants/messsage'
+import { USERS_MESSAGES } from '~/constants/messsage'
 import Follower from '~/models/schemas/Follower.schema'
 config()
 

@@ -25,3 +25,15 @@ export enum EncodingStatus {
   Success,
   Failed
 }
+export enum TweetType {
+  Tweet,
+  Retweet,
+  Comment,
+  QuoteTweet
+}
+export enum TweetAudience {
+  Tweet,
+  Retweet,
+  Comment,
+  QuoteTweet
+}

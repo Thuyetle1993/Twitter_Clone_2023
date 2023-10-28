@@ -1,8 +1,4 @@
-//  const USERS_MESSAGES = {
-//     VALIDATION_ERROR: 'Validation error'
-// } as const
 
-// export default USERS_MESSAGES
 
 export const USERS_MESSAGES = {
   VALIDATION_ERROR: 'Validation error',
@@ -69,4 +65,17 @@ export const USERS_MESSAGES = {
   GET_VIDEO_STATUS_SUCCESS: 'Get video status success'
 } as const
 
-export default USERS_MESSAGES
+
+export const TWEETS_MESSAGES = {
+  INVALID_TYPE: 'Invalid type',
+  INVALID_AUDIENCE: 'Invalid audience',
+  PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'Parent id must be a valid tweet id',
+  PARENT_ID_MUST_BE_NULL: 'Parent id must be null',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string',
+  CONTENT_MUST_BE_EMPTY_STRING: 'Content must be empty string',
+  HASHTAG_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtag must be an array of string',MENTION_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mention must be an array of user id',
+  MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias must be array of media object'
+
+
+
+} as const
