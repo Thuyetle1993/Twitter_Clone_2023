@@ -2,13 +2,42 @@ import { TweetRequestBody } from '~/models/request/Tweet.request'
 import databaseService from './database.services'
 import Tweet from '~/models/schemas/Tweet.schema'
 import { ObjectId } from 'mongodb'
+import Hashtag from '~/models/schemas/Hashtags.schema'
+import { WithId } from 'mongodb'
 
 class TweetsService {
+  //! Check hashtag trong DB va tao moi Hashtag
+  async checkAndCreateHashtags(hashtags: string[]) {    
+    const hashtagDocuments = await Promise.all(
+      hashtags.map((hashtag) => {
+        //? Tìm hashtag trong DB, nêu có thì lấy, ko có thì tạo mới
+        return databaseService.hashtags.findOneAndUpdate(
+          { name: hashtag },
+          {
+            $setOnInsert: new Hashtag({ name: hashtag })
+          },
+          {
+            upsert: true,
+            returnDocument: 'after'
+          }
+        )
+      })
+    )
+    // console.log('hashtagDocuments', hashtagDocuments)    
+    const nonNullHashtagDocuments = hashtagDocuments.filter((hashtag) => hashtag !== null) as WithId<Hashtag>[]
+    // Bước 2: Ánh xạ để lấy thuộc tính ._id
+    const hashtagIds = nonNullHashtagDocuments.map((hashtag) => hashtag._id);
+    // console.log(hashtagIds)
+    return hashtagIds
+  }
+  //! Tạo Tweet mới
   async createTweet(user_id: string, body: TweetRequestBody) {
+    const hashtags = await this.checkAndCreateHashtags(body.hashtags)
+    console.log(hashtags)
     const newTweet = new Tweet({
       audience: body.audience,
       content: body.content,
-      hashtag: [], // tạm thời để trống
+      hashtag: hashtags,
       mentions: body.mentions, // constructor sẽ chuyển đổi
       medias: body.medias,
       parent_id: body.parent_id ? new ObjectId(body.parent_id) : null, // chuyển đổi tại đây
