@@ -12,6 +12,7 @@ import { UPLOAD_VIDEO_DIR } from './constants/dir'
 import cors from 'cors'
 import { MongoClient } from 'mongodb'
 import tweetsRouter from './routes/tweets.routes'
+import bookmarksRouter from './routes/bookmarks.routes'
 const options = argv(process.argv.slice(2))
 
 const app = express()
@@ -32,6 +33,8 @@ app.use(express.json()) // ! middleware parse file json thanh Obj de Validation 
 app.use('/users', userRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
+
 app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 app.use(cors())
