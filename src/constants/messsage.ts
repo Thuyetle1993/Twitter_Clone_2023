@@ -75,7 +75,9 @@ export const TWEETS_MESSAGES = {
   MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias must be array of media object',
   CREATE_TWEET_SUCCESS: 'Create Tweet Successfully',
   UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully',
-  UNLIKE_TWEET_SUCCESS: 'Unlike tweet success'
+  UNLIKE_TWEET_SUCCESS: 'Unlike tweet success',
+  INVALID_TWEET_ID: 'Invalid Tweet Id',
+  TWEET_NOT_FOUND: 'Tweet not found'
 } as const
 
 export const COMMENTS_MESSAGES = {
