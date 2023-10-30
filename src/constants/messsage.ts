@@ -76,8 +76,7 @@ export const TWEETS_MESSAGES = {
   HASHTAG_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtag must be an array of string',MENTION_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mention must be an array of user id',
   MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias must be array of media object',
   CREATE_TWEET_SUCCESS: 'Create Tweet Successfully',
-
-
+  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully'
 
 
 } as const

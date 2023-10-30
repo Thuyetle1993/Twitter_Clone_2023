@@ -22,6 +22,17 @@ class BookmarkService {
     console.log(result)
     return result
   }
+  async unbookmarkTweet(user_id: string, tweetId: string) {
+    const result = await databaseService.bookmarks.findOneAndDelete(
+      {
+        user_id: new ObjectId(user_id),
+        tweet_id: new ObjectId(tweetId)
+      })
+    return result
+  }
+
+  
+  //! Thêm method ở dòng trên
 }
 
 const bookmarkService = new BookmarkService()
