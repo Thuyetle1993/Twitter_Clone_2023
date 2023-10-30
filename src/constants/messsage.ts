@@ -1,5 +1,3 @@
-
-
 export const USERS_MESSAGES = {
   VALIDATION_ERROR: 'Validation error',
   NAME_NOT_EMPTY: 'Name should not be empty',
@@ -65,7 +63,6 @@ export const USERS_MESSAGES = {
   GET_VIDEO_STATUS_SUCCESS: 'Get video status success'
 } as const
 
-
 export const TWEETS_MESSAGES = {
   INVALID_TYPE: 'Invalid type',
   INVALID_AUDIENCE: 'Invalid audience',
@@ -73,15 +70,15 @@ export const TWEETS_MESSAGES = {
   PARENT_ID_MUST_BE_NULL: 'Parent id must be null',
   CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string',
   CONTENT_MUST_BE_EMPTY_STRING: 'Content must be empty string',
-  HASHTAG_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtag must be an array of string',MENTION_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mention must be an array of user id',
+  HASHTAG_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtag must be an array of string',
+  MENTION_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mention must be an array of user id',
   MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias must be array of media object',
   CREATE_TWEET_SUCCESS: 'Create Tweet Successfully',
-  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully'
-
-
+  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully',
+  UNLIKE_TWEET_SUCCESS: 'Unlike tweet success'
 } as const
 
 export const COMMENTS_MESSAGES = {
- BOOKMARK_SUCCESS: 'Bookmark success',
-
+  BOOKMARK_SUCCESS: 'Bookmark success',
+  LIKE_TWEET_SUCCESS: 'Like tweet success'
 } as const

@@ -7,6 +7,7 @@ import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import Hashtag from '~/models/schemas/Hashtags.schema'
 import Bookmark from '~/models/schemas/bookmark.schema'
+import LikeTweets from '~/models/schemas/Like.schema'
 config()
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@tweeter-thuyet.jwhse00.mongodb.net/?retryWrites=true&w=majority`
@@ -85,6 +86,9 @@ class DatabaseService {
   }
   get bookmarks(): Collection<Bookmark> {
     return this.db.collection(process.env.DB_BOOKMARS_COLLECTION as string)
+  }
+  get likeTweets(): Collection<LikeTweets> {
+    return this.db.collection(process.env.DB_LIKE_TWEETS_COLLECTION as string)
   }
 
   
