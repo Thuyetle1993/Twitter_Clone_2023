@@ -1,5 +1,5 @@
 import { RequestHandler } from "express"
-import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 export const wrapRequestHandler = (func: RequestHandler) => {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -10,3 +10,5 @@ export const wrapRequestHandler = (func: RequestHandler) => {
         next(error)
     }}
 }
+
+

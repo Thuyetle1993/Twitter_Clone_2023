@@ -77,7 +77,9 @@ export const TWEETS_MESSAGES = {
   UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully',
   UNLIKE_TWEET_SUCCESS: 'Unlike tweet success',
   INVALID_TWEET_ID: 'Invalid Tweet Id',
-  TWEET_NOT_FOUND: 'Tweet not found'
+  TWEET_NOT_FOUND: 'Tweet not found',
+  GET_TWEET_SUCCESSFULLY: 'Get Tweet successfully',
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
 } as const
 
 export const COMMENTS_MESSAGES = {

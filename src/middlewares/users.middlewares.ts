@@ -560,3 +560,13 @@ export const changePasswordValidator = validate(
     confirm_password: confirmPasswordSchema   
   })
 )
+//? Check logged user Validator
+
+export const isUserLoggedValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+    next()
+  }
+}
