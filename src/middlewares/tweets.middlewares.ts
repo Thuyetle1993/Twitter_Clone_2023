@@ -52,7 +52,7 @@ export const createTweetValidator = validate(
           const type = req.body.type as TweetType
           const hashtags = req.body.hashtags as string[]
           const mentions = req.body.mentions as string[]
-          //? Nếu 'type' là comment,quote, tweet vaf ko co mention hay hashtag thi content phai la string va ko dc rong:
+          //? Nếu 'type' là comment,quote, tweet va ko co mention hay hashtag thi content phai la string va ko dc rong:
           if (
             [TweetType.Comment, TweetType.Tweet, TweetType.QuoteTweet].includes(type) &&
             isEmpty(mentions) &&
@@ -62,7 +62,7 @@ export const createTweetValidator = validate(
             throw new Error(TWEETS_MESSAGES.CONTENT_MUST_BE_A_NON_EMPTY_STRING)
           }
           //? Nêu type là retweet thì content phai la `''`
-          if (type === TweetType.Retweet && value !== null) {
+          if (type === TweetType.Retweet && value !== "") {
             throw new Error(TWEETS_MESSAGES.CONTENT_MUST_BE_EMPTY_STRING)
           }
           return true
@@ -124,9 +124,89 @@ export const tweetIdValidator = validate(checkSchema({
             message: TWEETS_MESSAGES.INVALID_TWEET_ID
           })
         }
-        const tweet = await databaseService.tweets.findOne({
-          _id: new ObjectId(value)
-        })
+        const [tweet] = await databaseService.tweets.aggregate<Tweet>(
+          [
+            {
+              '$match': {
+                '_id': new ObjectId('653e47328c72e666af99affa')
+              }
+            }, {
+              '$lookup': {
+                'from': 'hashtags', 
+                'localField': 'hashtag', 
+                'foreignField': '_id', 
+                'as': 'hashtag'
+              }
+            }, {
+              '$addFields': {
+                'hashtag': {
+                  '$map': {
+                    'input': '$hashtag', 
+                    'as': 'hashtag_new', 
+                    'in': {
+                      '_id_new': '$$hashtag_new._id', 
+                      'name_new': '$$hashtag_new.name'
+                    }
+                  }
+                }
+              }
+            }, {
+              '$lookup': {
+                'from': 'tweets', 
+                'localField': '_id', 
+                'foreignField': 'parent_id', 
+                'as': 'tweet_children'
+              }
+            }, {
+              '$addFields': {
+                'retweet_count': {
+                  '$size': {
+                    '$filter': {
+                      'input': '$tweet_children', 
+                      'as': 'item', 
+                      'cond': {
+                        '$eq': [
+                          '$$item.type', 1
+                        ]
+                      }
+                    }
+                  }
+                }, 
+                'comment_count': {
+                  '$size': {
+                    '$filter': {
+                      'input': '$tweet_children', 
+                      'as': 'item', 
+                      'cond': {
+                        '$eq': [
+                          '$$item.type', 2
+                        ]
+                      }
+                    }
+                  }
+                }, 
+                'quote_count': {
+                  '$size': {
+                    '$filter': {
+                      'input': '$tweet_children', 
+                      'as': 'item', 
+                      'cond': {
+                        '$eq': [
+                          '$$item.type', 3
+                        ]
+                      }
+                    }
+                  }
+                }, 
+                'total_views': {
+                  '$add': [
+                    '$guest_views', '$user_views'
+                  ]
+                }
+              }
+            }
+          ]
+        ).toArray()
         if (!tweet) {
           throw new ErrorWithStatus({
             status: HTTP_STATUS.NOT_FOUND,
