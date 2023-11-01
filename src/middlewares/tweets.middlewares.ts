@@ -128,7 +128,7 @@ export const tweetIdValidator = validate(checkSchema({
           [
             {
               '$match': {
-                '_id': new ObjectId('653e47328c72e666af99affa')
+                '_id': new ObjectId(value)
               }
             }, {
               '$lookup': {

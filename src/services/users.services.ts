@@ -86,7 +86,7 @@ class UserService {
   private signAccessAndRefreshToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
-  //! Privae decodedRefreshToken 
+  //! Private decodedRefreshToken 
   private decodeRefreshToken(refresh_token: string) {
     return verifyToken({
       token: refresh_token,
