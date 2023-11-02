@@ -166,7 +166,7 @@ export const tweetIdValidator = validate(checkSchema({
                       'as': 'item', 
                       'cond': {
                         '$eq': [
-                          '$$item.type', 1
+                          '$$item.type', TweetType.Retweet
                         ]
                       }
                     }
@@ -179,7 +179,7 @@ export const tweetIdValidator = validate(checkSchema({
                       'as': 'item', 
                       'cond': {
                         '$eq': [
-                          '$$item.type', 2
+                          '$$item.type', TweetType.Comment
                         ]
                       }
                     }
@@ -192,7 +192,7 @@ export const tweetIdValidator = validate(checkSchema({
                       'as': 'item', 
                       'cond': {
                         '$eq': [
-                          '$$item.type', 3
+                          '$$item.type', TweetType.QuoteTweet
                         ]
                       }
                     }

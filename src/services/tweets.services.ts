@@ -4,6 +4,7 @@ import Tweet from '~/models/schemas/Tweet.schema'
 import { ObjectId } from 'mongodb'
 import Hashtag from '~/models/schemas/Hashtags.schema'
 import { WithId } from 'mongodb'
+import { TweetType } from '~/constants/enum'
 
 class TweetsService {
   //! Check hashtag trong DB va tao moi Hashtag
@@ -75,6 +76,105 @@ class TweetsService {
     return result
   }
 
+  //! Get tweetChildren
+  async getTweetChildren({
+  tweet_id, tweet_type, limit, page}: {tweet_id: string, tweet_type: TweetType, limit: number, page: number}) {
+    const tweets = await databaseService.tweets.aggregate([
+      {
+        '$match': {
+          'parent_id': new ObjectId(tweet_id), 
+          'type': tweet_type
+        }
+      }, {
+        '$lookup': {
+          'from': 'hashtags', 
+          'localField': 'hashtag', 
+          'foreignField': '_id', 
+          'as': 'hashtag'
+        }
+      }, {
+        '$addFields': {
+          'hashtag': {
+            '$map': {
+              'input': '$hashtag', 
+              'as': 'hashtag_new', 
+              'in': {
+                '_id_new': '$$hashtag_new._id', 
+                'name_new': '$$hashtag_new.name'
+              }
+            }
+          }
+        }
+      }, {
+        '$lookup': {
+          'from': 'tweets', 
+          'localField': '_id', 
+          'foreignField': 'parent_id', 
+          'as': 'tweet_children'
+        }
+      }, {
+        '$addFields': {
+          'retweet_count': {
+            '$size': {
+              '$filter': {
+                'input': '$tweet_children', 
+                'as': 'item', 
+                'cond': {
+                  '$eq': [
+                    '$$item.type', TweetType.Retweet
+                  ]
+                }
+              }
+            }
+          }, 
+          'comment_count': {
+            '$size': {
+              '$filter': {
+                'input': '$tweet_children', 
+                'as': 'item', 
+                'cond': {
+                  '$eq': [
+                    '$$item.type', TweetType.Comment
+                  ]
+                }
+              }
+            }
+          }, 
+          'quote_count': {
+            '$size': {
+              '$filter': {
+                'input': '$tweet_children', 
+                'as': 'item', 
+                'cond': {
+                  '$eq': [
+                    '$$item.type', TweetType.QuoteTweet
+                  ]
+                }
+              }
+            }
+          }, 
+          'total_views': {
+            '$add': [
+              '$guest_views', '$user_views'
+            ]
+          }
+        }
+      }, {
+        '$skip': limit * (page - 1) //? Cong thuc phan trang
+      }, {
+        '$limit': limit
+      }
+    ]).toArray()
+    //? Tinh tong so doc tra ve
+    const total = await databaseService.tweets.countDocuments({
+      parent_id: new ObjectId(tweet_id),
+      type: tweet_type
+    })
+    return {
+      tweets,
+      total
+    }
+  }
   //! Tạo method mơi ở dòng trên
 }
 
