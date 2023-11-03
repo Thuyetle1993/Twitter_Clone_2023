@@ -14,6 +14,7 @@ import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likeRouter from './routes/like.routes'
 const options = argv(process.argv.slice(2))
+// import '~/utils/fake'
 
 const app = express()
 const port = process.env.PORT

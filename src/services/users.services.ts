@@ -329,7 +329,7 @@ class UserService {
       databaseService.followers.insertOne(
         new Follower({
           user_id: new ObjectId(user_id),
-          follower_user_id: new ObjectId(followed_user_id)
+          followed_user_id: new ObjectId(followed_user_id)
         })
       )
       return {

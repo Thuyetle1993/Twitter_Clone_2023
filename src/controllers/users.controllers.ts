@@ -22,6 +22,7 @@ import { USERS_MESSAGES } from '~/constants/messsage'
 import databaseService from '~/services/database.services'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enum'
+import { result } from 'lodash'
 
 // Login Controller
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
@@ -163,8 +164,10 @@ export const resetPasswordController = async (
 export const getMeController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const user = await userService.getMe(user_id)
+  console.log(user)
   return res.json({
-    message: USERS_MESSAGES.GET_ME_SUCCESS
+    message: USERS_MESSAGES.GET_ME_SUCCESS,
+    result: user
   })
 }
 

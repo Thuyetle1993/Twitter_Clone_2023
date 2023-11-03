@@ -222,7 +222,6 @@ export const tweetIdValidator = validate(checkSchema({
 }, ['params', 'body']))
 
 //? Audience Validator
-
 export const audienceValidator = wrapRequestHandler( async (req: Request, res: Response, next: NextFunction) => {
   const tweet = req.tweet as Tweet
   if (tweet.audience === TweetAudience.TwitterCircle) {
@@ -257,4 +256,42 @@ export const audienceValidator = wrapRequestHandler( async (req: Request, res: R
   }  
   next()
 })
-  
+
+//? get Tweet Children Validator
+export const getTweetChildrenValidator = validate(
+  checkSchema(
+    {
+      tweet_type: {
+        isIn: {
+          options: [tweetTypes],
+          errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+        }
+      },
+      limit: {
+        isNumeric: true,
+        custom: {
+          options: async (value, { req }) => {
+            const num = Number(value)
+            if (num > 100 || num < 1) {
+              throw new Error('1 <= limti <= 100')
+            }
+            return true
+          }
+        }
+      },
+      page: {
+        isNumeric: true,
+        custom: {
+          options: async (value, { req }) => {
+            const num = Number(value)
+            if ( num < 1 ) {
+              throw new Error('page >= 1')
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['query']
+  )
+)
