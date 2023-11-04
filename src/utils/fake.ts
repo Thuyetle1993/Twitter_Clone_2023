@@ -13,7 +13,7 @@ import { isDataView } from 'util/types';
 //Mật khẩu cho các faker user :
 const PASSWORD = 'Thuyet123'
 //ID cua tk dung der follow user khac
-const MYID = new ObjectId('65408532187f5166b7c92331')
+const MYID = new ObjectId('654673f42497b2041e92bc9f')
 // Số lượng user được tạo, mỗi user sẽ mặc định có sẵn 2 tweet
 const USER_COUNT = 100
 

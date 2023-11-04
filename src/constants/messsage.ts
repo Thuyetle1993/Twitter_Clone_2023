@@ -81,6 +81,7 @@ export const TWEETS_MESSAGES = {
   GET_TWEET_SUCCESSFULLY: 'Get Tweet successfully',
   TWEET_IS_NOT_PUBLIC: 'Tweet is not public',
   GET_TWEET_CHILDREN_SUCCESSFULLY: 'Get tweet children successfully',
+  GET_NEW_FEEDS_SUCCESSFULLY: 'Get new feeds successfully'
 } as const
 
 export const COMMENTS_MESSAGES = {
