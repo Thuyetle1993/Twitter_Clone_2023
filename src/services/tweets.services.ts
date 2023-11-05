@@ -238,9 +238,9 @@ class TweetsService {
     const ids = followed_user_ids.map((item) => item.followed_user_id)
     //? Lay newfeeds se lay luon ca tweet cua minh
     ids.push(user_id_obj)
-    console.log('ids :', ids)
-    //! Bat dau lay ra tweet tu mang cac user ids o tren
-    const tweets = await databaseService.tweets
+    //! Bat dau lay ra tweet tu mang cac user ids o tren, su dung promise all de lay luon tong so tweet retunr ve client
+    const [tweets, total] = await Promise.all([
+      databaseService.tweets
       .aggregate([
         {
           $match: {
@@ -372,9 +372,75 @@ class TweetsService {
             path: '$user_info'
           }
         }
-      ]).toArray()    
-    return tweets
+      ]).toArray(),
+      databaseService.tweets.aggregate([
+        {
+          $match: {
+            user_id: {
+              $in: ids
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user_info'
+          }
+        },
+        {
+          $match: {
+            $or: [
+              {
+                audience: 0
+              },
+              {
+                $and: [
+                  {
+                    audience: 1
+                  },
+                  {
+                    'user.twitter_circle': {
+                      $in: [user_id_obj]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        //? Them stage dem so document
+        {
+          $count: "total"
+        }
+      ]).toArray()
+    ])  
+      //? Xử lý tăng view cho các tweet get được trong page
+      const tweet_ids = tweets.map((tweet) => tweet._id as ObjectId)
+      const date = new Date()
+      await databaseService.tweets.updateMany(
+          {
+            _id: {
+              $in: tweet_ids
+            }
+          },
+          {
+            $inc: {user_views: 1},
+            $set: {
+              update_at: date
+            }
+          }
+        ),           
+      tweets.forEach((tweet) => {
+        tweet.update_at = date
+        tweet.user_views += 1        
+      })
+    return {
+      tweets,
+      total: total[0].total
   }
+}
 
   ///
   ///
@@ -383,3 +449,4 @@ class TweetsService {
 
 const tweetsService = new TweetsService()
 export default tweetsService
+
