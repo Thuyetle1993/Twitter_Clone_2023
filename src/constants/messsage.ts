@@ -87,5 +87,5 @@ export const TWEETS_MESSAGES = {
 export const COMMENTS_MESSAGES = {
   BOOKMARK_SUCCESS: 'Bookmark success',
   LIKE_TWEET_SUCCESS: 'Like tweet success',
-  
+  SEARCH_SUCCESSFULLY: 'Search Successfully'
 } as const

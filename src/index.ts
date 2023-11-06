@@ -13,6 +13,7 @@ import cors from 'cors'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likeRouter from './routes/like.routes'
+import seachRouter from './routes/search.routes'
 const options = argv(process.argv.slice(2))
 //! Tool tao user, tweet va follow tu dong, sau khi chay vai lan thì comment lại
 // import '~/utils/fake'
@@ -37,6 +38,7 @@ app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
 app.use('/like-tweet', likeRouter )
+app.use('/search', seachRouter )
 
 app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
