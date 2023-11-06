@@ -269,7 +269,7 @@ class TweetsService {
                     audience: 1
                   },
                   {
-                    'user.twitter_circle': {
+                    'user_info.twitter_circle': {
                       $in: [user_id_obj]
                     }
                   }
@@ -401,7 +401,7 @@ class TweetsService {
                     audience: 1
                   },
                   {
-                    'user.twitter_circle': {
+                    'user_info.twitter_circle': {
                       $in: [user_id_obj]
                     }
                   }

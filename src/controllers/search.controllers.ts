@@ -12,10 +12,17 @@ export const searchController
     const result = await searchService.search({
         limit,
         page,
-        content: req.query.content 
+        content: req.query.content,
+        user_id: req.decoded_authorization?.user_id as string
     })
     res.json({
         message : COMMENTS_MESSAGES.SEARCH_SUCCESSFULLY,
-        result
+        result: {
+            result: result.tweets,
+            limit,
+            page,
+            total_result : result.total
+
+        }
     })
   }
