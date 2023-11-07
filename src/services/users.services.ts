@@ -9,6 +9,7 @@ import refreshTokens from '~/models/schemas/RefreshToken.schema'
 import { config } from 'dotenv'
 import { USERS_MESSAGES } from '~/constants/messsage'
 import Follower from '~/models/schemas/Follower.schema'
+import { sendVerifyEmail } from '~/utils/email'
 config()
 
 class UserService {
@@ -27,7 +28,7 @@ class UserService {
     })
   }
   // Tao Refresh Token
-  private signRefreshToken({ user_id, verify, exp }: { user_id: string; verify: UserVerifyStatus, exp?: number }) {
+  private signRefreshToken({ user_id, verify, exp }: { user_id: string; verify: UserVerifyStatus; exp?: number }) {
     if (exp) {
       return signToken({
         payload: {
@@ -36,7 +37,7 @@ class UserService {
           verify,
           exp
         },
-        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,        
+        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     }
     return signToken({
@@ -86,7 +87,7 @@ class UserService {
   private signAccessAndRefreshToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
-  //! Private decodedRefreshToken 
+  //! Private decodedRefreshToken
   private decodeRefreshToken(refresh_token: string) {
     return verifyToken({
       token: refresh_token,
@@ -115,13 +116,22 @@ class UserService {
       user_id: user_id.toString(),
       verify: UserVerifyStatus.Unverified
     })
-    const {iat, exp} = await this.decodeRefreshToken(refress_token)
+    const { iat, exp } = await this.decodeRefreshToken(refress_token)
 
     // Thêm RF vào DB
     await databaseService.refreshTokens.insertOne(
       new refreshTokens({ user_id: new ObjectId(user_id), token: refress_token, iat, exp })
     )
     console.log('email_verify_token', email_verify_token)
+    //! Send email verify
+    await sendVerifyEmail(
+      payload.email,
+      'Verify your email',
+      `
+    <h1>Verify Your Email<h1>
+    <p> Click <a href="${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}">here</a> to verify your email</p>
+    `
+    )
     return {
       access_token,
       refress_token
@@ -148,7 +158,12 @@ class UserService {
 
     //? Thêm refresh token mới vào DB
     await databaseService.refreshTokens.insertOne(
-      new refreshTokens({ user_id: new ObjectId(user_id), token: new_refresh_token, iat: decoded_refresh_token.iat, exp: decoded_refresh_token.exp  })
+      new refreshTokens({
+        user_id: new ObjectId(user_id),
+        token: new_refresh_token,
+        iat: decoded_refresh_token.iat,
+        exp: decoded_refresh_token.exp
+      })
     )
     return {
       access_token: new_access_token,
@@ -165,7 +180,7 @@ class UserService {
       user_id,
       verify
     })
-    const {iat, exp} = await this.decodeRefreshToken(refresh_token)
+    const { iat, exp } = await this.decodeRefreshToken(refresh_token)
 
     // Thêm RF vào DB
     await databaseService.refreshTokens.insertOne(
@@ -200,17 +215,16 @@ class UserService {
       ])
     ])
     const [access_token, refresh_token] = token
-    const {iat, exp} = await this.decodeRefreshToken(refresh_token)
+    const { iat, exp } = await this.decodeRefreshToken(refresh_token)
 
     await databaseService.refreshTokens.insertOne(
-      new refreshTokens({user_id: new ObjectId(user_id), token: refresh_token, iat, exp})
+      new refreshTokens({ user_id: new ObjectId(user_id), token: refresh_token, iat, exp })
     )
     return {
       access_token,
       refresh_token
     }
   }
-
 
   //! Resend Verify Email
 

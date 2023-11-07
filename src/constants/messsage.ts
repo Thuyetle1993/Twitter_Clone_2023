@@ -87,5 +87,11 @@ export const TWEETS_MESSAGES = {
 export const COMMENTS_MESSAGES = {
   BOOKMARK_SUCCESS: 'Bookmark success',
   LIKE_TWEET_SUCCESS: 'Like tweet success',
-  SEARCH_SUCCESSFULLY: 'Search Successfully'
+  SEARCH_SUCCESSFULLY: 'Search Successfully',
+  
 } as const
+
+export const SEARCH_MESSAGES = {
+  CONTENT_MUST_BE_STRING: 'Content must be string',
+  PEOPLE_FOLLOWING_MUST_BE_0_OR_1 : 'People following must be 0 or 1'
+}

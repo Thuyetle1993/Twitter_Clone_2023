@@ -1,14 +1,14 @@
-import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses'
-import { config } from 'dotenv'
+const { SendEmailCommand, SESClient } = require('@aws-sdk/client-ses')
+const { config } = require('dotenv')
 config()
 
 
 //! Create SES service object.
 const sesClient = new SESClient({
-  region: process.env.AWS_REGION as string,
+  region: process.env.AWS_REGION,
   credentials: {
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID
   }
 })
 
@@ -19,13 +19,6 @@ const createSendEmailCommand = ({
   body,
   subject,
   replyToAddresses = []
-}: {
-    fromAddress: string,
-    toAddresses: string | string[],
-    ccAddresses?: string | string[],
-    body: string,
-    subject: string,
-    replyToAddresses?: string | string[]
 }) => {
   return new SendEmailCommand({
     Destination: {
@@ -52,12 +45,28 @@ const createSendEmailCommand = ({
   })
 }
 
-export const sendVerifyEmail = (toAddress: string, subject: string, body: string) => {
+const sendVerifyEmail = async (toAddress, subject, body) => {
   const sendEmailCommand = createSendEmailCommand({
-    fromAddress: process.env.SES_FROM_ADDRESS as string,
+    fromAddress: process.env.SES_FROM_ADDRESS,
     toAddresses: toAddress,
     body,
     subject
   })
-  return sesClient.send(sendEmailCommand)
+
+  // try {
+  //   return await sesClient.send(sendEmailCommand)
+  // } catch (e) {
+  //   console.error('Failed to send email.')
+  //   return e
+  // }
+  try {
+    const response = await sesClient.send(sendEmailCommand);
+    console.log(`Email sent successfully to ${toAddress}. Message ID: ${response.MessageId}`);
+    return response;
+  } catch (e) {
+    console.error('Failed to send email.', e);
+    return e;
+  }
 }
+
+sendVerifyEmail('ledangthuyet@gmail.com', 'Thử chức năng send email của SES lan 3', '<h1>Xin chao Thuyet Le </h1>')

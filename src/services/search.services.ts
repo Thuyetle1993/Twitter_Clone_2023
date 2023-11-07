@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.services'
-import { MediaType, MediaTypeQuery, TweetType } from '~/constants/enum'
+import { MediaType, MediaTypeQuery, PeopleFollowing, TweetType } from '~/constants/enum'
 
 class SearchService {
   async search({
@@ -16,7 +16,7 @@ class SearchService {
     content: string
     user_id: string
     media_type?: MediaTypeQuery
-    people_following?: string
+    people_following?: PeopleFollowing
   }) {
     //? Khai bao dieu kien filter query
     const $match: any = {
@@ -35,32 +35,32 @@ class SearchService {
       }
     }
     //! Kiem tra co seach tu user following ko
-    if (people_following && people_following === '1') {
-    //? Lay ra mang user_id follow :
-    const user_id_obj = new ObjectId(user_id)
-    //? Lay ra mang followed id
-    const followed_user_ids = await databaseService.followers
-      .find(
-        {
-          user_id: user_id_obj
-        },
-        {
-          projection: {
-            followed_user_id: 1,
-            _id: 0
+    if (people_following && people_following === PeopleFollowing.Following) {
+      //? Lay ra mang user_id follow :
+      const user_id_obj = new ObjectId(user_id)
+      //? Lay ra mang followed id
+      const followed_user_ids = await databaseService.followers
+        .find(
+          {
+            user_id: user_id_obj
+          },
+          {
+            projection: {
+              followed_user_id: 1,
+              _id: 0
+            }
           }
-        }
-      )
-      .toArray()
-    const ids = followed_user_ids.map((item) => item.followed_user_id)
-    //? Lay newfeeds se lay luon ca tweet cua minh
-    ids.push(user_id_obj)
-    //? Them mang tren vào bien $match
-    $match['user_ids'] = {
-      $in: ids
+        )
+        .toArray()
+      const ids = followed_user_ids.map((item) => item.followed_user_id)
+      //? Lay newfeeds se lay luon ca tweet cua minh
+      ids.push(user_id_obj)
+      //? Them mang tren vào bien $match
+      $match['user_ids'] = {
+        $in: ids
+      }
     }
-    }
-     
+
     const [tweets, total] = await Promise.all([
       databaseService.tweets
         .aggregate([
