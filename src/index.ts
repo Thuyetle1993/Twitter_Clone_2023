@@ -49,6 +49,7 @@ databaseService.connect().then(() => {
   databaseService.indexRefreshToken()
   databaseService.indexVideoStatus()
   databaseService.indexFollowers()
+  databaseService.indexTweets()
 })
 
 // Middleware xử lý lỗi
@@ -64,19 +65,3 @@ app.listen(port, () => {
 //   `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@tweeter-thuyet.jwhse00.mongodb.net/?retryWrites=true&w=majority`
 // )
 
-//  const db = mgclient.db('thuyet-KIP')
-//  //? Tao 1000 doc vao collection users
-//  const users = db.collection('users')
-//  const usersData = []
-//  function getRandomNumber() {
-//   return  Math.floor(Math.random() * 100) + 1
-//  }
-
-//  for ( let i = 0; i < 1000; i++) {
-//   usersData.push({
-//     name: 'user' + (i+1),
-//     age: getRandomNumber(),
-//     sex: i % 2 === 0 ? 'male' : 'female'
-//   })
-//  }
-//  users.insertMany(usersData)

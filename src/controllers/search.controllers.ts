@@ -13,7 +13,8 @@ export const searchController
         limit,
         page,
         content: req.query.content,
-        user_id: req.decoded_authorization?.user_id as string
+        user_id: req.decoded_authorization?.user_id as string,
+        media_type: req.query.media_type
     })
     res.json({
         message : COMMENTS_MESSAGES.SEARCH_SUCCESSFULLY,
