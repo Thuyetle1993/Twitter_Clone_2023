@@ -38,7 +38,9 @@
     "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.445.0",
     "@aws-sdk/client-ses": "^3.441.0",
+    "@aws-sdk/lib-storage": "^3.445.0",
     "@types/faker": "^6.6.9",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/lodash": "^4.14.199",

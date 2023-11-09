@@ -103,7 +103,7 @@ export const verifyEmailController = async (
   })
 }
 
-// Resend VerifyEmail Controller
+//? Resend VerifyEmail Controller
 
 export const resendVerifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
@@ -121,23 +121,23 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
     })
   }
   // Neu chua verify thi goi toi service de gui lai verifytoken va tra ve thong bao da gui lai emailverify
-  const result = await userService.resendVerifyEmail(user_id)
+  const result = await userService.resendVerifyEmail(user_id, user.email)
   return res.json(result)
 }
 
-// ForgotPassword Controller
+//? ForgotPassword Controller
 
 export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
   res: Response,
   next: NextFunction
 ) => {
-  const { _id, verify } = req.user as User
-  const result = await userService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
+  const { _id, verify,email } = req.user as User
+  const result = await userService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify, email })
   return res.json(result)
 }
 
-// Verify ForgotPasswordToken Controller
+//? Verify ForgotPasswordToken Controller
 export const verifyForgotPasswordTokenController = async (
   req: Request<ParamsDictionary, any, VerifyForgotPasswordReqBody>,
   res: Response,

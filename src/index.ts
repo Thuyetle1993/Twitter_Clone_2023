@@ -17,7 +17,10 @@ import seachRouter from './routes/search.routes'
 const options = argv(process.argv.slice(2))
 //! Tool tao user, tweet va follow tu dong, sau khi chay vai lan thì comment lại
 // import '~/utils/fake'
-
+import path from 'path'
+// console.log('duongdan la :', path.resolve())
+//! import AWS S3
+import '~/utils/s3'
 const app = express()
 const port = process.env.PORT
 
