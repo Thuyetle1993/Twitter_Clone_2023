@@ -20,10 +20,10 @@ export const handleUploadImage = async (req: Request & IncomingMessage) => {
   const formidable = (await import('formidable')).default
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
-    maxFiles: 4,
+    maxFiles: 5,
     keepExtensions: true,
-    maxFileSize: 300 * 1024,
-    maxTotalFileSize: 300 * 1024 * 4,
+    maxFileSize: 1024 * 1024 * 2,
+    maxTotalFileSize: 1024 * 1024 * 10,
     filter: function ({ name, originalFilename, mimetype }) {
       //? Neu valid có name là image và mimetype là kiểu ảnh ( luôn trả về là true hoặc false)
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
@@ -52,7 +52,7 @@ export const handleUploadVideo = async (req: Request & IncomingMessage) => {
   const nanoID = (await import('nanoid')).nanoid
   const idName = nanoID()
   // console.log(idName)
-  //! Tao folder chua video HLS
+  //! Tao folder chua video
 
   const folderPath = path.resolve(UPLOAD_VIDEO_DIR, idName)
   fs.mkdirSync(folderPath)
@@ -86,8 +86,13 @@ export const handleUploadVideo = async (req: Request & IncomingMessage) => {
       const videos = files.video as File[]
       videos.forEach((video) => {
         const ext = getExtension(video.originalFilename as string)
-        fs.renameSync(video.filepath, video.filepath + '.' + ext)
-        video.newFilename = video.newFilename + '.'  + ext
+        const newFilePath = video.filepath + '.' + ext;
+        // console.log('newFilepath', newFilePath)
+        fs.renameSync(video.filepath, newFilePath)
+        video.filepath = newFilePath; // Cập nhật giá trị của video.filepath trong code
+        // console.log('filepath', video.filepath)
+        video.newFilename = idName + '.'  + ext
+        // console.log('newFilename', video.newFilename)
       })
       resolve(files.video as File[])
     })
